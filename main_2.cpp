@@ -275,53 +275,35 @@ int Similarity_Position()
     }
 
     system("cls");
-    print_array();
-    //////////this part is for debug !
-    gotoxy(0,0);
-    cout<<guess_this_number;
-    //////////
-
-    
-
-    gotoxy(5,15);
-    cout<<"The number is between 1 and "<<pow(10,digit_num)-1;
-
+    cout<<"The number is between 1 and "<<pow(10,digit_num)-1<<endl;
     int guessed_number = 0 , lose = 0 , max_lose_times = digit_num * 2;
     while (guessed_number != guess_this_number && lose != max_lose_times)
-    {
-        if (guessed_number != 0)
-        {
-            gotoxy(5,18);
-            cout<<"Your last guess was : "<<guessed_number;
-            guessed_number =0;
-        }
-        gotoxy(14,16);
-        for (int i = 0; i < digit_num; i++)
-        {
-            char c;
-            int digit;
-            c=getch();
-            digit = c - '0';
-            guessed_number = guessed_number*10 + digit;
-            gotoxy(14 + i*2,16);
-            cout<<digit;
-        }
-        cout<<guessed_number;
+    {  
+        guessed_number =0;
+        cout<<"enter your guess here :";
+        cin>>guessed_number;
         if (guessed_number != guess_this_number)
         {
             lose ++ ;
             int similar_digits = similar_digits_finder(guess_this_number , guessed_number);
             int correct_digits = correct_digits_finder(guess_this_number , guessed_number);
             similar_digits = similar_digits - correct_digits ;
-            gotoxy (5,20);
-            cout<<"You guessed "<<similar_digits<<" similar digits";
-            gotoxy(5,21);
-            cout<<"and "<<correct_digits<<" correct digits in your last guess !";
+            
+            cout<<"You guessed "<<similar_digits<<" similar digits"<<endl;
+            
+            cout<<"and "<<correct_digits<<" correct digits in your last guess !"<<endl<<endl;
         }
         
     }
     system("cls");
-    cout<<"You won !!!";
+    if (lose == max_lose_times)
+    {
+        cout<<"You lost !!"<<endl<<"the number was "<<guess_this_number<<endl;
+    }
+    else
+    {
+        cout<<"You won !!!";
+    }
     sleep(5);
     exit(0);
 }
