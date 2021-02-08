@@ -23,6 +23,7 @@ char screen[maxy][maxx];
 
 /*********************functions***************/
 void gotoxy(int xpos, int ypos);
+string int_to_string (int n);
 int get_digit_num();
 int get_game_mode();
 int get_number_fuser(int digit_num);
@@ -272,12 +273,18 @@ int Similarity_Position()
     {
         guess_this_number = get_number_fuser(digit_num);
     }
-    
+
     system("cls");
     print_array();
+    //////////this part is for debug !
+    gotoxy(0,0);
+    cout<<guess_this_number;
+    //////////
+
+    
 
     gotoxy(5,15);
-    cout<<"The number is between 1 and "<<pow(10,digit_num);
+    cout<<"The number is between 1 and "<<pow(10,digit_num)-1;
 
     int guessed_number = 0 , lose = 0 , max_lose_times = digit_num * 2;
     while (guessed_number != guess_this_number && lose != max_lose_times)
@@ -299,14 +306,15 @@ int Similarity_Position()
             gotoxy(14 + i*2,16);
             cout<<digit;
         }
+        cout<<guessed_number;
         if (guessed_number != guess_this_number)
         {
             lose ++ ;
             int similar_digits = similar_digits_finder(guess_this_number , guessed_number);
             int correct_digits = correct_digits_finder(guess_this_number , guessed_number);
-            similar_digits -= correct_digits ;
+            similar_digits = similar_digits - correct_digits ;
             gotoxy (5,20);
-            cout<<"You guessed "<<similar_digits<<" correct digits but with wrong place";
+            cout<<"You guessed "<<similar_digits<<" similar digits";
             gotoxy(5,21);
             cout<<"and "<<correct_digits<<" correct digits in your last guess !";
         }
@@ -321,7 +329,7 @@ int Similarity_Position()
 //correct_digits_finder returns the number of correct digits in two integers
 int correct_digits_finder(int n1,int n2)
 {
-    int correct_digits;
+    int correct_digits=0;
     string sn1 = int_to_string(n1) , sn2 = int_to_string(n2);
     for (int i = 0; i < sn1.length(); i++)
     {
@@ -346,6 +354,7 @@ int similar_digits_finder(int n1,int n2)
             {
                 similar_digits ++;
                 sn2[j]=' ';
+                break;
             }   
         }   
     }
