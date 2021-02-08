@@ -1,15 +1,20 @@
 #include <iostream>
+#include <math.h>     //for using pow()
 #include <stdlib.h>   //for using rand
 #include <windows.h>  //for defining gotoxy
 #include <stdlib.h>   //for exiting 
 #include <unistd.h>   //for defining sleep
 #include <conio.h>    //for getch and detection of pressing any key
 #include <time.h>     //for using srand(time(0))
+#include <string>     //for working with entered numbers
 
 #define maxx	40
 #define maxy	30
 #define minx	0
 #define miny	0
+
+#define computer_mode 1
+#define friend_mode 2
 
 using namespace std;
 
@@ -18,14 +23,23 @@ char screen[maxy][maxx];
 
 /*********************functions***************/
 void gotoxy(int xpos, int ypos);
+int get_digit_num();
+int get_game_mode();
+int get_number_fuser(int digit_num);
+int correct_digits_finder(int n1,int n2);
+int similar_digits_finder(int n1,int n2);
 void welcome_page(void);
 int Greater_Smaller(void);
+int Similarity_Position();
 void print_border(void);
 void print_array(void);
 int menu(void);
+/*********************************************/
+
 
 int main()
 {
+    print_border();
     welcome_page();
     menu();
 }
@@ -134,70 +148,69 @@ void instructions(void)
 	{
 		if (kbhit)
 		{
-		char ch;
-		ch = getch();
-		if (int(ch) == 27)
-		break;	
+            char ch;
+            ch = getch();
+            if (int(ch) == 27)
+            break;	
 		}
 	}
-  menu();
+    menu();
 } 
 
 int menu(void)
 {
 	system("cls");
-   while (true)
-   {
+    while (true)
+    {
    
-    print_border();
-    print_array();
-    
-    gotoxy(14,8);
-    cout<<"MASTER MIND";
-	sleep(1);
-    gotoxy(18,11);
-    cout<<"MENU";
-	sleep(1);
-    gotoxy(10,16);
-    cout<<"1: Greater & Smaller";
-	sleep(1);
-    gotoxy(8,18);
-    cout<<"2: Similarity & Position";
-	sleep(1);
-	gotoxy(6,20);
-    cout<<"Press 'I' to see instructions";
-	sleep(1);
-    gotoxy(10,22);
-    cout<<"Press 'Esc' to exit";
-      while(1)
-	{
-		if (kbhit)
-		{
-			char ch;
-			ch = getch();
-			if (int(ch) == 49)
-			Greater_Smaller();
-			else if(int(ch) == 50)
-            Similarity_Position();
-            else if (int(ch) == 73 || int(ch) == 105)
-			instructions();
-			else if (int(ch) == 27)
-			{
-			gotoxy(1,31);
-			exit(0);	
-			}
-			
-		}	
-		else
-			system("cls");
-	}
-   }
+        print_border();
+        print_array();
+        
+        gotoxy(14,8);
+        cout<<"MASTER MIND";
+        sleep(1);
+        gotoxy(18,11);
+        cout<<"MENU";
+        sleep(1);
+        gotoxy(10,16);
+        cout<<"1: Greater & Smaller";
+        sleep(1);
+        gotoxy(8,18);
+        cout<<"2: Similarity & Position";
+        sleep(1);
+        gotoxy(6,20);
+        cout<<"Press 'I' to see instructions";
+        sleep(1);
+        gotoxy(10,22);
+        cout<<"Press 'Esc' to exit";
+        while(1)
+        {
+            if (kbhit)
+            {
+                char ch;
+                ch = getch();
+                if (int(ch) == 49)
+                    Greater_Smaller();
+                else if(int(ch) == 50)
+                    Similarity_Position();
+                else if (int(ch) == 73 || int(ch) == 105)
+                    instructions();
+                else if (int(ch) == 27)
+                {
+                    gotoxy(1,31);
+                    exit(0);	
+                }
+                
+            }	
+            else
+                system("cls");
+        }
+    }
 } 
 
 void welcome_page(void) 
 {
-   while (true)
-   {
+   
     print_border();
     print_array();
     
@@ -215,13 +228,193 @@ void welcome_page(void)
 	sleep(1);
     gotoxy(12,19);
     cout<<"Alireza Mikaeili";
-      sleep(3);
+    sleep(3);
 	for (int i=3; i>0; i--){
-	gotoxy(19,21);
-    cout<<i;
+        gotoxy(19,21);
+        cout<<i;
       	sleep(1);
 	}
 	system("cls");
-   	break;
-   }
+   
+}
+
+
+int Similarity_Position()
+{
+    int digit_num = get_digit_num();
+    int game_mode = get_game_mode();
+    int guess_this_number;
+    if (game_mode == computer_mode)
+    {
+        srand(time(0));
+        guess_this_number = rand() % int(pow(10,digit_num)) + 1;
+    }
+    else if (game_mode == friend_mode)
+    {
+        guess_this_number = get_number_fuser(digit_num);
+    }
+    
+    system("cls");
+    print_array();
+
+    gotoxy(5,15);
+    cout<<"The number is between 1 and "<<pow(10,digit_num);
+
+    int guessed_number = 0 , lose = 0 , max_lose_times = digit_num * 2;
+    while (guessed_number != guess_this_number && lose != max_lose_times)
+    {
+        if (guessed_number != 0)
+        {
+            gotoxy(5,18);
+            cout<<"Your last guess was : "<<guessed_number;
+            guessed_number =0;
+        }
+        gotoxy(14,16);
+        for (int i = 0; i < digit_num; i++)
+        {
+            char c;
+            int digit;
+            c=getch();
+            digit = c - '0';
+            guessed_number = guessed_number*10 + digit;
+            gotoxy(14 + i*2,16);
+            cout<<digit;
+        }
+        if (guessed_number != guess_this_number)
+        {
+            lose ++ ;
+            int similar_digits = similar_digits_finder(guess_this_number , guessed_number);
+            int correct_digits = correct_digits_finder(guess_this_number , guessed_number);
+            similar_digits -= correct_digits ;
+            gotoxy (5,20);
+            cout<<"You guessed "<<similar_digits<<" correct digits but with wrong place";
+            gotoxy(5,21);
+            cout<<"and "<<correct_digits<<" correct digits in your last guess !";
+        }
+        
+    }
+    system("cls");
+    cout<<"You won !!!";
+    sleep(5);
+    exit(0);
+}
+
+//correct_digits_finder returns the number of correct digits in two integers
+int correct_digits_finder(int n1,int n2)
+{
+    int correct_digits;
+    string sn1 = to_string(n1) , sn2 = to_string(n2);
+    for (int i = 0; i < sn1.length(); i++)
+    {
+        if (sn1[i]==sn2[i])
+        {
+            correct_digits ++;
+        }
+    }
+    return correct_digits;
+}
+
+//similar_digits_finder returns the number of similar digits in two integers
+int similar_digits_finder(int n1,int n2)
+{
+    int similar_digits=0;
+    string sn1 = to_string(n1) , sn2 = to_string(n2);
+    for (int i = 0; i < sn1.length(); i++)
+    {
+        for (int j = 0; j < sn2.length(); j++)
+        {
+            if (sn1[i]==sn2[j])
+            {
+                similar_digits ++;
+                sn2[j]=' ';
+            }   
+        }   
+    }
+    return similar_digits;
+}
+
+//get_digit_num returns the user's preferable number of digits
+int get_digit_num()
+{
+    system("cls");
+    print_array();
+    int digit_num =0 ;
+    gotoxy(1,16);
+    cout<<"Please enter your preferable";
+    gotoxy(4 , 17);
+    cout<<"number of digits (3-5)";
+    while (digit_num == 0)
+    {
+        if (kbhit)
+        {
+            char ch;
+            ch = getch();
+            switch (ch)
+            {
+            case '3':
+                digit_num = 3;
+                break;
+            
+            case '4':
+                digit_num = 4;
+                break;
+            case '5':
+                digit_num = 5;
+                break;
+            }
+        } 
+    }
+    return digit_num;
+}
+
+//get_game_mode returns the game mode user wants to pleay camputer_mode or friend_mode
+int get_game_mode()
+{
+    system("cls");
+    print_array();
+    int game_mode =0;
+    gotoxy(7,16);
+    cout<<"What game mode ";
+    gotoxy(5,17);
+    cout<<"do you want to play ?";
+    gotoxy(7,18);
+    cout<<"1 - vs. computer";
+    gotoxy(8,19);
+    cout<<"2 - vs. friend";
+    while (game_mode ==0)
+    {
+        if (kbhit)
+        {
+            char ch;
+            ch = getch();
+            switch (ch)
+            {
+            case '1':
+                game_mode = computer_mode;
+                break;
+            
+            case '2':
+                game_mode = friend_mode;
+                break;
+            }
+        } 
+    }
+    return game_mode;
+}
+
+int get_number_fuser(int digit_num)
+{
+    system("cls");
+    print_array();
+    int number_fuser;
+    gotoxy(6,16);
+    cout<<"This item should be";
+    gotoxy(5,17);
+    cout<<"entered by your friend!";
+    gotoxy(7,18);
+    cout<<"Please enter a ";
+    gotoxy(7,19);
+    cout<<digit_num<<" digit number :";
+    cin>>number_fuser;
+    return number_fuser;
 }
