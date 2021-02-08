@@ -41,7 +41,7 @@ int menu(void);
 int main()
 {
     print_border();
-    welcome_page();
+    //welcome_page();
     menu();
 }
 
@@ -112,6 +112,7 @@ void print_array(void)
 
 int Greater_Smaller()
 {
+	int lose =0;
     system("cls");
     srand(time(0));
     int i, n = rand() % 100;
@@ -120,14 +121,26 @@ int Greater_Smaller()
         cout << endl << "Please enter the correct number : ";
         cin >> i;
         if (i == n)
-            break;
-        if (n > i)
+        {
+        	system("cls");
+        	cout<<"you won !";
+        	return 0;
+		}   
+        else if (n > i)
         {
             cout << "No, Try a greater number.";
-            continue;
+            //continue;
         }
-        cout << "No, Try a smaller number.";
-    } while (i!=n);
+        else
+			cout << "No, Try a smaller number.";
+			
+		lose++;
+		
+    } while (i!=n && lose <=10 );
+    system("cls");
+    cout<<"you lost";
+    cout<<endl<<"the number was :"<<n;
+    return 0;
 }
 
 void instructions(void)
@@ -349,9 +362,9 @@ int get_digit_num()
     system("cls");
     print_array();
     int digit_num =0 ;
-    gotoxy(1,16);
+    gotoxy(5,10);
     cout<<"Please enter your preferable";
-    gotoxy(4 , 17);
+    gotoxy(5, 12);
     cout<<"number of digits (3-5)";
     while (digit_num == 0)
     {
@@ -383,13 +396,13 @@ int get_game_mode()
     system("cls");
     print_array();
     int game_mode =0;
-    gotoxy(7,16);
+    gotoxy(10,10);
     cout<<"What game mode ";
-    gotoxy(5,17);
+    gotoxy(10,11);
     cout<<"do you want to play ?";
-    gotoxy(7,18);
+    gotoxy(10,12);
     cout<<"1 - vs. computer";
-    gotoxy(8,19);
+    gotoxy(10,13);
     cout<<"2 - vs. friend";
     while (game_mode ==0)
     {
@@ -414,17 +427,33 @@ int get_game_mode()
 
 int get_number_fuser(int digit_num)
 {
-    system("cls");
-    print_array();
-    int number_fuser;
-    gotoxy(6,16);
-    cout<<"This item should be";
-    gotoxy(5,17);
-    cout<<"entered by your friend!";
-    gotoxy(7,18);
-    cout<<"Please enter a ";
-    gotoxy(7,19);
-    cout<<digit_num<<" digit number :";
-    cin>>number_fuser;
-    return number_fuser;
+	int length=0;
+	while(1)
+	{
+		system("cls");
+	    print_array();
+    	int number_fuser;
+    	gotoxy(5,10);
+    	cout<<"This item should be ";
+    	gotoxy(5,11);
+    	cout<<"entered by your friend!";
+    	gotoxy(5,12);
+    	cout<<"Please enter a digit number :";
+    	cin>>number_fuser;
+   		for(int temp = number_fuser;temp!=0;temp/=10,length++);
+    	if(length == digit_num)
+    		return number_fuser;
+    	else
+    	{
+    		system("cls");
+    		print_array();
+    		gotoxy(5,10);
+    		cout<<"your number is wrong";
+    		gotoxy(5,11);
+    		cout<<"please try again";
+    		sleep(2);
+		}
+    		
+	}
+    
 }
