@@ -52,6 +52,25 @@ void gotoxy(int xpos, int ypos)
 	SetConsoleCursorPosition(hOuput,scrn);
 }
 
+string int_to_string (int n)
+{
+    string s;
+    while (n !=0)
+    {
+        s.push_back(n%10 + '0');
+        n /= 10;
+    }
+    //reversing the string
+    for (int i = 0; i < s.length()/2; i++)
+    {
+        char temp= s[i];
+        s[i] = s[s.length()-1 - i];
+        s[s.length()-1 - i] = temp;
+    }
+    
+    return s;
+}
+
 void print_border(void)
 {
 	for (int i = miny; i < maxy; i++)
@@ -303,7 +322,7 @@ int Similarity_Position()
 int correct_digits_finder(int n1,int n2)
 {
     int correct_digits;
-    string sn1 = to_string(n1) , sn2 = to_string(n2);
+    string sn1 = int_to_string(n1) , sn2 = int_to_string(n2);
     for (int i = 0; i < sn1.length(); i++)
     {
         if (sn1[i]==sn2[i])
@@ -318,7 +337,7 @@ int correct_digits_finder(int n1,int n2)
 int similar_digits_finder(int n1,int n2)
 {
     int similar_digits=0;
-    string sn1 = to_string(n1) , sn2 = to_string(n2);
+    string sn1 = int_to_string(n1) , sn2 = int_to_string(n2);
     for (int i = 0; i < sn1.length(); i++)
     {
         for (int j = 0; j < sn2.length(); j++)
