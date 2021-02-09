@@ -57,7 +57,7 @@ void gotoxy(int xpos, int ypos)
 string int_to_string (int n)
 {
    ostringstream str1; 
-    str1 << k; 
+    str1 << n; 
     string s = str1.str();
     return s;
 }
