@@ -9,7 +9,7 @@
 #include <string>     //for working with entered numbers
 #include <sstream>    //for using ostringstream
 
-#define maxx	40
+#define maxx	42
 #define maxy	30
 #define minx	0
 #define miny	0
@@ -35,6 +35,9 @@ int Greater_Smaller(void);
 int Similarity_Position();
 void print_border(void);
 void print_array(void);
+void losing(int n);
+void winning(void);
+void instructions(void);
 int menu(void);
 /*********************************************/
 
@@ -42,7 +45,7 @@ int menu(void);
 int main()
 {
     print_border();
-    //welcome_page();
+    welcome_page();
     menu();
 }
 
@@ -50,7 +53,7 @@ void gotoxy(int xpos, int ypos)
 {
 	COORD scrn;
 	HANDLE hOuput = GetStdHandle(STD_OUTPUT_HANDLE);
-	scrn.X = xpos; scrn.Y = ypos;
+	scrn.X = xpos+1; scrn.Y = ypos;
 	SetConsoleCursorPosition(hOuput,scrn);
 }
 
@@ -70,7 +73,7 @@ void print_border(void)
         {
             for (int j = minx; j < maxx; j++)
             {
-                screen[i][j]= '_';
+                screen[i][j]= '±';
             }
         }
         else
@@ -83,8 +86,8 @@ void print_border(void)
     }
     for (int i=miny+1;i<maxy;i++)
     {
-     	screen[i][minx]='|';
-    	screen[i][maxx-1]='|';
+     	screen[i][minx]='±';
+    	screen[i][maxx-1]='±';
     }
 }
 void print_array(void)
@@ -100,6 +103,92 @@ void print_array(void)
     }
 }
 
+void losing(int n)  
+{
+		print_border();
+        print_array();
+        gotoxy(14,8);
+        cout<<"You lost !!";
+        sleep(1);
+        gotoxy(11,12);
+        cout<<"the number was "<<n;
+        sleep(2);
+        gotoxy(4,19);
+        cout<<"Thanks for playing MASTER MIND";
+		sleep(2);
+		gotoxy(11,21);
+		cout<<"Play again?\t"<<"Y|N";
+		while(1)
+	{
+		if (kbhit)
+		{
+			char ch;
+			ch = getch();
+			if (int(ch) == 89 || int(ch) == 121)
+			{
+			menu();
+			}
+			else if (int(ch) == 78 || int(ch) == 110)
+			{
+            gotoxy(2,32);
+			cout<<"See you later!";
+			sleep(2);
+			exit(0);	
+			}
+			
+		}	
+		else
+			system("cls");
+	}
+	
+}
+
+void winning(void)
+{
+	system("cls");
+    print_border();
+    print_array();
+	sleep(1);
+	gotoxy(14,8);
+        cout<<"MASTER MIND";
+		sleep(2);
+	gotoxy(12,12);
+        cout<<"Congratulations";
+	sleep(1);
+	 gotoxy(15,14);
+        cout<<"You won!";
+        sleep(1);
+    gotoxy(10,16);
+        cout<<"You are a prescience!";
+		sleep(2);
+		gotoxy(4,19);
+		cout<<"Thanks for playing MASTER MIND";
+		sleep(1);
+		gotoxy(11,21);
+		cout<<"Play again?\t"<<"Y|N";
+		while(1)
+	{
+		if (kbhit)
+		{
+			char ch;
+			ch = getch();
+			if (int(ch) == 89 || int(ch) == 121)
+			{
+				menu();
+			}
+			else if (int(ch) == 78 || int(ch) == 110)
+			{
+				gotoxy(2,31);
+			cout<<"See you later!";
+			sleep(2);
+			exit(0);	
+			}
+			
+		}	
+		else
+			system("cls");
+	}
+}
 int Greater_Smaller()
 {
 	int lose =0;
@@ -110,7 +199,7 @@ int Greater_Smaller()
     if (game_mode == computer_mode)
     {
         srand(time(0));
-        n = rand() % int(pow(10,digit_num)) + 1;
+            n = rand() % int(pow(10,digit_num)-pow(10,digit_num-1)) + pow(10,digit_num-1) ;
     }
     else if (game_mode == friend_mode)
     {
@@ -120,28 +209,26 @@ int Greater_Smaller()
     system("cls");
     do
     {
-        cout << endl << "Please enter the correct number : ";
+        cout<<"\tThe number is between "<<pow(10,digit_num-1)<<" and "<<pow(10,digit_num)-1<<endl;
+        cout << "\tGuess the correct number: ";
         cin >> i;
         if (i == n)
         {
-        	system("cls");
-        	cout<<"you won !";
-        	return 0;
+        	winning();
 		}   
         else if (n > i)
         {
-            cout << "No, Try a greater number.";
+            cout << "\tNo, try a greater number.\n\n";
             //continue;
         }
         else
-			cout << "No, Try a smaller number.";
+			cout << "\tNo, try a smaller number.\n\n";
 			
 		lose++;
 		
-    } while (i!=n && lose <=10 );
+    } while (i!=n && lose <digit_num*3);
     system("cls");
-    cout<<"you lost";
-    cout<<endl<<"the number was :"<<n;
+        losing(n);
     return 0;
 }
 
@@ -173,7 +260,7 @@ void instructions(void)
     gotoxy(1,19);
         cout<<"Guess the number computer has given";
 	gotoxy(1,21);
-		 cout<<"vs. friends";
+		 cout<<"vs. friends:";
     gotoxy(1,22);
         cout<<"Guess the number your friend has given";
 	sleep(1);
@@ -213,11 +300,11 @@ int menu(void)
         gotoxy(8,18);
         cout<<"2: Similarity & Position";
         sleep(1);
-        gotoxy(6,20);
-        cout<<"Press 'I' to see instructions";
+        gotoxy(12,20);
+        cout<<"I: Instructions";
         sleep(1);
-        gotoxy(10,22);
-        cout<<"Press 'Esc' to exit";
+        gotoxy(15,22);
+        cout<<"Esc: Exit";
         while(1)
         {
             if (kbhit)
@@ -281,11 +368,8 @@ int Similarity_Position()
     int guess_this_number;
     if (game_mode == computer_mode)
     {
-        while (guess_this_number < int(pow(10,digit_num-1)))
-        {
             srand(time(0));
-            guess_this_number = rand() % int(pow(10,digit_num)) ;
-        }
+            guess_this_number = rand() % int(pow(10,digit_num)-pow(10,digit_num-1)) + pow(10,digit_num-1) ;
     }
     else if (game_mode == friend_mode)
     {
@@ -293,12 +377,12 @@ int Similarity_Position()
     }
 
     system("cls");
-    cout<<"The number is between 1 and "<<pow(10,digit_num)-1<<endl;
+    cout<<"\tThe number is between "<<pow(10,digit_num-1)<<" and "<<pow(10,digit_num)-1;
     int guessed_number = 0 , lose = 0 , max_lose_times = digit_num * 2;
     while (guessed_number != guess_this_number && lose != max_lose_times)
     {  
         guessed_number =0;
-        cout<<"enter your guess here :";
+        cout<<"\tGuess the correct number: ";
         cin>>guessed_number;
         if (guessed_number != guess_this_number)
         {
@@ -307,23 +391,21 @@ int Similarity_Position()
             int correct_digits = correct_digits_finder(guess_this_number , guessed_number);
             similar_digits = similar_digits - correct_digits ;
             
-            cout<<"You guessed "<<similar_digits<<" similar digits"<<endl;
+            cout<<"\tThe number of similar digits with different positions:"<<similar_digits<<endl;
             
-            cout<<"and "<<correct_digits<<" correct digits in your last guess !"<<endl<<endl;
+            cout<<"\tThe number of similar digits with same positions:"<<correct_digits<<endl<<endl;
         }
         
     }
     system("cls");
     if (lose == max_lose_times)
     {
-        cout<<"You lost !!"<<endl<<"the number was "<<guess_this_number<<endl;
+        losing(guess_this_number);
     }
     else
     {
-        cout<<"You won !!!";
+       winning();
     }
-    sleep(5);
-    exit(0);
 }
 
 //correct_digits_finder returns the number of correct digits in two integers
@@ -401,10 +483,8 @@ int get_game_mode()
     system("cls");
     print_array();
     int game_mode =0;
-    gotoxy(10,10);
-    cout<<"What game mode ";
-    gotoxy(10,11);
-    cout<<"do you want to play ?";
+    gotoxy(6,10);
+    cout<<"Who do you want to play with? ";
     gotoxy(10,12);
     cout<<"1 - vs. computer";
     gotoxy(10,13);
@@ -430,9 +510,9 @@ int get_game_mode()
     return game_mode;
 }
 
+//fuser==from user :)
 int get_number_fuser(int digit_num)
 {
-	
 	while(1)
 	{
 		system("cls");
@@ -454,9 +534,11 @@ int get_number_fuser(int digit_num)
     		system("cls");
     		print_array();
     		gotoxy(5,10);
-    		cout<<"your number is wrong";
+    		cout<<"Your number is wrong";
     		gotoxy(5,11);
-    		cout<<"please try again";
+    		cout<<"It should be "<<digit_num<<" digits";
+            gotoxy(5,12);
+            cout<<"Try again!";
     		sleep(2);
 		}
     		
