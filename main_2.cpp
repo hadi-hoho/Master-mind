@@ -281,8 +281,11 @@ int Similarity_Position()
     int guess_this_number;
     if (game_mode == computer_mode)
     {
-        srand(time(0));
-        guess_this_number = rand() % int(pow(10,digit_num)) + 1;
+        while (guess_this_number < int(pow(10,digit_num-1)))
+        {
+            srand(time(0));
+            guess_this_number = rand() % int(pow(10,digit_num)) ;
+        }
     }
     else if (game_mode == friend_mode)
     {
