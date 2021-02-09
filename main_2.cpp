@@ -7,6 +7,7 @@
 #include <conio.h>    //for getch and detection of pressing any key
 #include <time.h>     //for using srand(time(0))
 #include <string>     //for working with entered numbers
+#include <sstream>    //for using ostringstream
 
 #define maxx	40
 #define maxy	30
@@ -55,20 +56,9 @@ void gotoxy(int xpos, int ypos)
 
 string int_to_string (int n)
 {
-    string s;
-    while (n !=0)
-    {
-        s.push_back(n%10 + '0');
-        n /= 10;
-    }
-    //reversing the string
-    for (int i = 0; i < s.length()/2; i++)
-    {
-        char temp= s[i];
-        s[i] = s[s.length()-1 - i];
-        s[s.length()-1 - i] = temp;
-    }
-    
+   ostringstream str1; 
+    str1 << k; 
+    string s = str1.str();
     return s;
 }
 
