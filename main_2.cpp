@@ -114,8 +114,20 @@ int Greater_Smaller()
 {
 	int lose =0;
     system("cls");
-    srand(time(0));
-    int i, n = rand() % 100;
+    int digit_num = get_digit_num();
+    int game_mode = get_game_mode();
+    int n;
+    if (game_mode == computer_mode)
+    {
+        srand(time(0));
+        n = rand() % int(pow(10,digit_num)) + 1;
+    }
+    else if (game_mode == friend_mode)
+    {
+        n = get_number_fuser(digit_num);
+    }
+    int i = 0;
+    system("cls");
     do
     {
         cout << endl << "Please enter the correct number : ";
