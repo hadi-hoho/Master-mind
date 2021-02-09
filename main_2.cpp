@@ -429,7 +429,7 @@ int get_game_mode()
 
 int get_number_fuser(int digit_num)
 {
-	int length=0;
+	
 	while(1)
 	{
 		system("cls");
@@ -442,6 +442,7 @@ int get_number_fuser(int digit_num)
     	gotoxy(5,12);
     	cout<<"Please enter a digit number :";
     	cin>>number_fuser;
+        int length=0;
    		for(int temp = number_fuser;temp!=0;temp/=10,length++);
     	if(length == digit_num)
     		return number_fuser;
