@@ -351,7 +351,8 @@ void welcome_page(void)
     gotoxy(12,19);
     cout<<"Alireza Mikaeili";
     sleep(3);
-	for (int i=3; i>0; i--){
+	for (int i=3; i>0; i--)
+	{
         gotoxy(19,21);
         cout<<i;
       	sleep(1);
@@ -377,7 +378,7 @@ int Similarity_Position()
     }
 
     system("cls");
-    cout<<"\tThe number is between "<<pow(10,digit_num-1)<<" and "<<pow(10,digit_num)-1;
+    cout<<"\tThe number is between "<<pow(10,digit_num-1)<<" and "<<pow(10,digit_num)-1<<endl;
     int guessed_number = 0 , lose = 0 , max_lose_times = digit_num * 2;
     while (guessed_number != guess_this_number && lose != max_lose_times)
     {  
@@ -387,6 +388,14 @@ int Similarity_Position()
         if (guessed_number != guess_this_number)
         {
             lose ++ ;
+            int length=0;
+   			for(int temp = guessed_number;temp!=0;temp/=10,length++);
+   			if(length != digit_num)
+   			{
+   				cout<<"\tYour number is wrong";
+    			cout<<"\tIt should be "<<digit_num<<" digits"<<endl<<endl;
+    			continue;
+			}
             int similar_digits = similar_digits_finder(guess_this_number , guessed_number);
             int correct_digits = correct_digits_finder(guess_this_number , guessed_number);
             similar_digits = similar_digits - correct_digits ;
